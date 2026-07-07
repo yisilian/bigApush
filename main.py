@@ -889,7 +889,7 @@ B1完美图形匹配:
                             lines.append("")
                             for _n in _news_list[:8]:
                                 _title = _n.get('title', '')[:50]
-                                _intro = _n.get('intro', '')[:100]
+                                _intro = _n.get('intro', '')
                                 if _title:
                                     lines.append(f"  • {_title}")
                                     if _intro:
