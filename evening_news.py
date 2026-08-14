@@ -6,7 +6,7 @@
 import requests
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 添加项目根目录到路径
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -107,7 +107,7 @@ def send_feishu(msg):
 
 
 def main():
-    now = datetime.now()
+    now = datetime.utcnow() + timedelta(hours=8)  # 北京时间
     lines = []
 
     # 标题

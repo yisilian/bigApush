@@ -15,8 +15,13 @@ import argparse
 import platform
 import logging
 from pathlib import Path
-from datetime import datetime, time as dt_time
+from datetime import datetime, time as dt_time, timedelta
 import time
+
+
+def _bj_now():
+    """返回北京时间 now(UTC+8),用于展示与日期判断,避免 runner 的 UTC 时区导致错位 8 小时"""
+    return datetime.utcnow() + timedelta(hours=8)
 
 # 配置日志
 logging.basicConfig(
@@ -711,7 +716,7 @@ B1完美图形匹配:
             # 检查今天是否为交易日
             from utils.trade_date_utils import is_trading_day
             from datetime import datetime
-            today_str = datetime.now().strftime('%Y-%m-%d')
+            today_str = _bj_now().strftime('%Y-%m-%d')
             if not is_trading_day(today_str):
                 print(f"今天 {today_str} 不是交易日，跳过选股")
                 sys.exit(0)
@@ -753,7 +758,7 @@ B1完美图形匹配:
                 except Exception:
                     pass
 
-                lines = [f"📊 缅A每日推送 ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})", ""]
+                lines = [f"📊 缅A每日推送 ({_bj_now().strftime('%Y-%m-%d %H:%M:%S')})", ""]
                 total = 0
                 all_stocks = []
                 if isinstance(result, dict):
@@ -780,7 +785,7 @@ B1完美图形匹配:
                         from datetime import date as _date
                         _srm = SelectionRecordManager()
                         _today_codes = {s['code'] for s in all_stocks}
-                        _today_str = datetime.now().strftime('%Y-%m-%d')
+                        _today_str = _bj_now().strftime('%Y-%m-%d')
 
                         _prev_result = _srm.get_selection_history(
                             filters={'end_date': _today_str}, page=1, limit=5000
@@ -864,7 +869,7 @@ B1完美图形匹配:
                             pass
                     if _idx_lines:
                         lines.append("━━━━━━━━━━━━━━━━━━━━")
-                        lines.append(f"📈 今日大盘复盘 ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})")
+                        lines.append(f"📈 今日大盘复盘 ({_bj_now().strftime('%Y-%m-%d %H:%M:%S')})")
                         lines.append("")
                         lines.extend(_idx_lines)
                         lines.append("")
