@@ -99,11 +99,14 @@ class QuantSystem:
 
     def _smart_update(self, max_stocks=None, check_latest=True):
         """智能更新：3点前不更新，检查每只股票是否有当天数据"""
-        from datetime import datetime
+        from datetime import datetime, timedelta
         import pandas as pd
 
-        today = datetime.now().date()
-        current_time = datetime.now().time()
+        # GitHub Actions runner 默认使用 UTC 时区；统一换算为北京时间(UTC+8)再判断收盘，
+        # 否则 runner 上 datetime.now() 为 UTC 07:xx，会恒小于 15:00 而跳过更新（一直用旧数据）
+        now = datetime.utcnow() + timedelta(hours=8)
+        today = now.date()
+        current_time = now.time()
         market_close_time = datetime.strptime("15:00", "%H:%M").time()
 
         # 3点前：不更新，使用旧数据
